@@ -9,7 +9,7 @@ class Frame(tk.Frame):
         self.pack()
         self.id_peli = None
         self.fondo = "#FBFCDD"   
-        self.config(bg = self.fondo) # se pueden usar clores hexa o el nombre
+        self.config(bg = self.fondo)
 
         self.label_form()
         self.input_form()
@@ -52,6 +52,25 @@ class Frame(tk.Frame):
         self.entry_genero.current(0)  
         self.entry_genero.bind("<<ComboboxSelected>>")    
         self.entry_genero.grid(row= 2, column=1,padx=10,pady=10)
+        
+        # Director
+        directores = consulta.listar_directores()
+        self.directores = ['Seleccione Uno'] + [d[1] for d in directores]
+        self.entry_director = ttk.Combobox(self, state="readonly", width=25)
+        self.entry_director['values'] = self.directores
+        self.entry_director.current(0)
+        self.entry_director.config(state='disabled')
+        self.entry_director.grid(row=3, column=1, padx=10, pady=10)
+
+        # Año
+        anios = consulta.listar_anios()
+        self.anios = ['Seleccione Uno'] + [str(a[1]) for a in anios]
+        self.entry_anio = ttk.Combobox(self, state="readonly", width=25)
+        self.entry_anio['values'] = self.anios
+        self.entry_anio.current(0)
+        self.entry_anio.config(state='disabled')
+        self.entry_anio.grid(row=4, column=1, padx=10, pady=10)
+
     
     def botones_principales(self):    
         self.btn_alta = tk.Button(self, text='Nuevo', command=self.habilitar_campos)    
@@ -130,7 +149,9 @@ class Frame(tk.Frame):
         pelicula = consulta.Peliculas(
             self.nombre.get(),
             self.duracion.get(),
-            self.entry_genero.current()
+            self.entry_genero.current(),
+            self.entry_director.current(),
+            self.entry_anio.current()
         )
 
         if self.id_peli == None:
@@ -146,7 +167,10 @@ class Frame(tk.Frame):
     def habilitar_campos(self):    
         self.entry_nombre.config(state='normal')    
         self.entry_duracion.config(state='normal')    
-        self.entry_genero.config(state='normal')    
+        self.entry_genero.config(state='normal') 
+        self.entry_director.config(state='normal')
+        self.entry_anio.config(state='normal')   
+            
         self.btn_modi.config(state='normal')    
         self.btn_cance.config(state='normal')    
         self.btn_alta.config(state='disabled')
@@ -154,7 +178,10 @@ class Frame(tk.Frame):
     def bloquear_campos(self):    
         self.entry_nombre.config(state='disabled')
         self.entry_duracion.config(state='disabled')    
-        self.entry_genero.config(state='disabled')    
+        self.entry_genero.config(state='disabled')  
+        self.entry_director.config(state='normal')
+        self.entry_anio.config(state='normal') 
+          
         self.btn_modi.config(state='disabled')    
         self.btn_cance.config(state='disabled')    
         self.btn_alta.config(state='normal')
